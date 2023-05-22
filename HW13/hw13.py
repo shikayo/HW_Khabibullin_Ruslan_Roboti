@@ -1,5 +1,6 @@
 import cv2
 import numpy as np
+import cv
 
 cap = cv2.VideoCapture(0)
 imgTarget = cv2.imread('photo_2022-12-26_21-06-30.jpg')
@@ -79,6 +80,8 @@ while True:
             good.append(m)
             print(len(good))
             imgFeatures = cv2.drawMatches(imgTarget, kp1, imgWebcam, kp2, good, None, flags=2)
+
+    imgStacked = None
     if len(good) > 20:
         detection = True
         srcPts = np.float32([kp1[m.queryIdx].pt for m in good]).reshape(-1, 1, 2)
@@ -101,6 +104,7 @@ while True:
         imgStacked = stackImages(([imgFeatures, imgAug, imgWarp], [imgWebcam, imgVideo, imgTarget]), 0.2)
 
 
-    cv2.imshow('imgStacked', imgStacked)
-    cv2.waitKey(1)
-    frameCounter += 1
+    if imgStacked is not None:
+        cv2.imshow('imgStacked', imgStacked)
+        cv2.waitKey(1)
+        frameCounter += 1
